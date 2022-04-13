@@ -1,47 +1,36 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const SnackBarDemo());
+void main() {
+  return runApp(const MyApp());
+}
 
-class SnackBarDemo extends StatelessWidget {
-  const SnackBarDemo({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SnackBar Demo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('SnackBar Demo'),
-        ),
-        body: const SnackBarPage(),
-      ),
+    return const MaterialApp(
+      title: 'Package Fonts',
+      home: MyHomePage(),
     );
   }
 }
 
-class SnackBarPage extends StatelessWidget {
-  const SnackBarPage({Key? key}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          final snackBar = SnackBar(
-            content: const Text('Yay! A SnackBar!'),
-            action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () {
-                // Some code to undo the change.
-              },
-            ),
-          );
-
-          // Find the ScaffoldMessenger in the widget tree
-          // and use it to show a SnackBar.
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        },
-        child: const Text('Show SnackBar'),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Package Fonts')),
+      body: const Center(
+        child: Text(
+          'Using the Raleway font from the awesome_package',
+          style: TextStyle(
+            fontFamily: 'Raleway',
+            package: 'awesome_package',
+          ),
+        ),
       ),
     );
   }
