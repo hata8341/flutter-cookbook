@@ -1,83 +1,42 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-Future<Album> fetchAlbum(http.Client client) async {
-  final response = await client
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
-
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Album.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
-  }
+void main() {
+  runApp(MyApp(
+    items: List<String>.generate(10000, (i) => "Item $i"),
+  ));
 }
 
-class Album {
-  final int userId;
-  final int id;
-  final String title;
+class MyApp extends StatelessWidget {
+  final List<String> items;
 
-  const Album({required this.userId, required this.id, required this.title});
-
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
-    );
-  }
-}
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late final Future<Album> futureAlbum;
-
-  @override
-  void initState() {
-    super.initState();
-    futureAlbum = fetchAlbum(http.Client());
-  }
+  const MyApp({Key? key, required this.items}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    const title = 'Long List';
+
     return MaterialApp(
-      title: 'Fetch Data Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: title,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Fetch Data Example'),
+          title: const Text(title),
         ),
-        body: Center(
-          child: FutureBuilder<Album>(
-            future: futureAlbum,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data!.title);
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              // By default, show a loading spinner.
-              return const CircularProgressIndicator();
-            },
-          ),
+        body: ListView.builder(
+          // Add a key to the ListView. This makes it possible to
+          // find the list and scroll through it in the tests.
+          key: const Key('long_list'),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(
+                items[index],
+                // Add a key to the Text widget for each item. This makes
+                // it possible to look for a particular item in the list
+                // and verify that the text is correct
+                key: Key('item_${index}_text'),
+              ),
+            );
+          },
         ),
       ),
     );
